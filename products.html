@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop - Food & Drinks</title>
+    <link rel="stylesheet" href="products.css">
+</head>
+
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="cart.html">Cart</a></li>
+                <li><a href="./verify/login.html">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h1>Shop Food & Drinks</h1>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Product ID</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>201</td>
+                    <td>Cheeseburger</td>
+                    <td>Food</td>
+                    <td>30</td>
+                    <td>$5</td>
+                    <td><button class="add-cart-btn" onclick="addToCart('201', 'Cheeseburger', 5)">Add to Cart</button></td>
+                </tr>
+                <tr>
+                    <td>202</td>
+                    <td>Chicken Wrap</td>
+                    <td>Food</td>
+                    <td>25</td>
+                    <td>$6</td>
+                    <td><button class="add-cart-btn" onclick="addToCart('202', 'Chicken Wrap', 6)">Add to Cart</button></td>
+                </tr>
+                <tr>
+                    <td>203</td>
+                    <td>Orange Juice</td>
+                    <td>Drink</td>
+                    <td>50</td>
+                    <td>$3</td>
+                    <td><button class="add-cart-btn" onclick="addToCart('203', 'Orange Juice', 3)">Add to Cart</button></td>
+                </tr>
+                <tr>
+                    <td>204</td>
+                    <td>Latte</td>
+                    <td>Drink</td>
+                    <td>40</td>
+                    <td>$4</td>
+                    <td><button class="add-cart-btn" onclick="addToCart('204', 'Latte', 4)">Add to Cart</button></td>
+                </tr>
+                <!-- You can add more food & drink items here -->
+            </tbody>
+        </table>
+    </main>
+
+    <script>
+        function addToCart(productId, productName, productPrice) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+            let existingProduct = cart.find(p => p.id === productId);
+            if (existingProduct) {
+                existingProduct.quantity += 1;
+            } else {
+                cart.push({ id: productId, name: productName, price: productPrice, quantity: 1 });
+            }
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+            alert(productName + " added to cart!");
+        }
+    </script>
+</body>
+
+</html>
