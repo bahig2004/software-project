@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="Admin.css">
+</head>
+
+<body>
+    <div class="sidebar">
+        <h2>Admin Panel</h2>
+        <a href="#" onclick="showSection('usersSection')">Manage Users</a>
+        <a href="#" onclick="showSection('ordersSection')">Manage Orders</a>
+        <a href="#" onclick="showSection('productsSection')">Manage Products</a>
+        <a href="#" onclick="showSection('suppliersSection')">Manage Suppliers</a>
+        <a href="../verify/login.html" onclick="logout()">Logout</a>
+    </div>
+
+    <div class="main-content">
+        <h1>Welcome, Admin</h1>
+        <p>Manage users, products, orders, and suppliers.</p>
+
+        <!-- Users Section -->
+        <div id="usersSection" class="section">
+            <h2>Users</h2>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="userTableBody"></tbody>
+            </table>
+        </div>
+
+        <!-- Orders Section -->
+        <div id="ordersSection" class="section" style="display: none;">
+            <h2>Orders</h2>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Products</th>
+                        <th>Total</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="orderTableBody"></tbody>
+            </table>
+        </div>
+
+        <!-- Products Section -->
+        <div id="productsSection" class="section" style="display: none;">
+            <h2>Products</h2>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Product ID</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="productTableBody"></tbody>
+            </table>
+        </div>
+
+        <!-- Suppliers Section -->
+        <div id="suppliersSection" class="section" style="display: none;">
+            <h2>Suppliers</h2>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Supplier ID</th>
+                        <th>Name</th>
+                        <th>Contact</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="supplierTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function logout() {
+            alert("Logging out...");
+            window.location.href = 'login.html';
+        }
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => section.style.display = 'none');
+            document.getElementById(sectionId).style.display = 'block';
+        }
+
+        let users = JSON.parse(localStorage.getItem("users")) || [];
+        let orders = JSON.parse(localStorage.getItem("orders")) || [];
+        let products = JSON.parse(localStorage.getItem("products")) || [
+            { id: 201, name: 'Cheeseburger', category: 'Food', price: 5, quantity: 30 },
+            { id: 202, name: 'Chicken Wrap', category: 'Food', price: 6, quantity: 25 },
+            { id: 203, name: 'Orange Juice', category: 'Drink', price: 3, quantity: 50 },
+            { id: 204, name: 'Latte', category: 'Drink', price: 4, quantity: 40 }
+        ];
+        let suppliers = [
+            { id: 300, name: 'ABC Supplies', contact: '123456789' }
+        ];
+
+        function renderTable(data, tableBodyId, columns) {
+            let tableBody = document.getElementById(tableBodyId);
+            tableBody.innerHTML = "";
+            data.forEach((item, index) => {
+                let row = `<tr>`;
+                columns.forEach(col => {
+                    if (col === 'products') {
+                        row += `<td>${item.products.map(p => `${p.name} (x${p.quantity})`).join(', ')}</td>`;
+                    } else {
+                        row += `<td>${item[col]}</td>`;
+                    }
+                });
+                row += `<td><button onclick="deleteRow('${tableBodyId}', ${index})">Delete</button></td></tr>`;
+                tableBody.innerHTML += row;
+            });
+        }
+
+        function deleteRow(tableBodyId, index) {
+            if (tableBodyId === "userTableBody") {
+                users.splice(index, 1);
+                localStorage.setItem("users", JSON.stringify(users));
+            }
+            if (tableBodyId === "orderTableBody") {
+                orders.splice(index, 1);
+                localStorage.setItem("orders", JSON.stringify(orders));
+            }
+            if (tableBodyId === "productTableBody") {
+                products.splice(index, 1);
+                localStorage.setItem("products", JSON.stringify(products));
+            }
+            if (tableBodyId === "supplierTableBody") suppliers.splice(index, 1);
+
+            renderAllTables();
+        }
+
+        function renderAllTables() {
+            renderTable(users, "userTableBody", ['id', 'name', 'email']);
+            renderTable(orders, "orderTableBody", ['id', 'products', 'total']);
+            renderTable(products, "productTableBody", ['id', 'name', 'category', 'price', 'quantity']);
+            renderTable(suppliers, "supplierTableBody", ['id', 'name', 'contact']);
+        }
+
+        renderAllTables();
+    </script>
+</body>
+
+</html>
